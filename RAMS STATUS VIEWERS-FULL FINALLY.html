@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ViralView – Join the status exchange</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f4ff;--ink:#14122b;--mut:#5b5a78;--card:#fff;--line:#d9dcf2;--pink:#ff3d77;--sun:#ffd23f;--grn:#0f9d58;--seg:#dfe2f6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12112a;--ink:#f1f1ff;--mut:#a5a4c6;--card:#1c1b3b;--line:#34335e;--seg:#2d2c55}}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.5;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.wrap{max-width:960px;margin:0 auto;padding:20px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:8px 0 24px}
+.logo{font-weight:800;font-size:1.4rem;letter-spacing:-.02em}.logo b{color:var(--pink)}
+nav a{color:var(--mut);font-size:.9rem;text-decoration:none}
+h1{font-size:clamp(2.4rem,7vw,4.6rem);line-height:1;letter-spacing:-.04em;font-weight:800;margin:0 0 16px}
+h2{font-size:1.5rem;letter-spacing:-.02em;margin:0 0 12px}
+.lead{font-size:1.15rem;color:var(--mut);max-width:34em;margin:0 0 28px}
+.story{background:var(--card);border:2px solid var(--ink);border-radius:20px;padding:18px;margin-bottom:28px}
+.segs{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin-bottom:14px}
+.seg{height:9px;border-radius:5px;background:var(--seg);overflow:hidden}
+.seg i{display:block;height:100%;width:0;background:var(--pink);transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.meter{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px}
+.meter strong{font-size:2.2rem;letter-spacing:-.03em}.meter span{color:var(--mut)}
+.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:start}
+@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+label{display:block;font-weight:600;font-size:.9rem;margin:14px 0 6px}
+input,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:12px}
+input:focus,select:focus,button:focus-visible,a:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.row{display:flex;gap:8px}.row select{width:40%}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:.85rem;color:var(--mut);margin:16px 0}
+.chk input{width:20px;height:20px;margin-top:2px;flex:none}
+button,.btn{font:inherit;font-weight:700;border:0;border-radius:12px;padding:14px 20px;background:var(--pink);color:#fff;cursor:pointer;width:100%;text-align:center;text-decoration:none;display:inline-block}
+button.alt,.btn.alt{background:var(--ink);color:var(--bg)}
+button.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+button:disabled{opacity:.6;cursor:wait}
+.err{color:#d92d20;font-size:.9rem;min-height:1.2em;margin-top:10px}
+.ok{background:var(--sun);color:#14122b;border-radius:14px;padding:18px;margin-bottom:14px}
+.ok code{display:block;background:#fff;border-radius:8px;padding:10px;margin:10px 0;word-break:break-all;font-size:.85rem}
+ol{padding-left:1.2em;margin:0}li{margin-bottom:12px}li span{color:var(--mut)}
+.ms{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.ms span{border:1.5px solid var(--line);border-radius:99px;padding:4px 12px;font-size:.85rem;color:var(--mut)}
+.ms span.done{background:var(--grn);border-color:var(--grn);color:#fff}
+footer{color:var(--mut);font-size:.82rem;padding:32px 0 8px}
+table{width:100%;border-collapse:collapse;font-size:.85rem}th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line)}
+.tw{overflow-x:auto}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.board{list-style:none;padding:0;margin:0}
+.board li{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);margin:0}
+.board li:last-child{border-bottom:0}
+.rk{width:30px;height:30px;border-radius:50%;background:var(--seg);display:grid;place-items:center;font-weight:800;font-size:.85rem;flex:none}
+.board li:nth-child(1) .rk{background:var(--sun);color:#14122b}
+.board li:nth-child(2) .rk,.board li:nth-child(3) .rk{background:var(--pink);color:#fff}
+.board .nm{flex:1;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.board .iv{color:var(--mut);font-size:.9rem}
+.empty{color:var(--mut);margin:0}
+.hide{display:none!important}
+.demo{background:var(--sun);color:#14122b;font-size:.8rem;text-align:center;padding:6px;font-weight:600}
+@media(prefers-reduced-motion:reduce){.seg i{transition:none}}
+</style>
+</head>
+<body>
+<div id="demo" class="demo hide">Demo mode: data stays in this browser. Add your Supabase keys to go live (see README).</div>
+<div class="wrap">
+<nav><div class="logo">Viral<b>View</b></div><a href="#admin" id="adminLink">Admin</a></nav>
+
+<main id="home">
+<h1>Get 1,000 people watching your status.</h1>
+<p class="lead">Add your name and WhatsApp number. When the group hits its goal, everyone gets one contact file and saves each other. Same contacts, more views for everyone.</p>
+
+<section class="story" aria-label="Progress">
+<div class="segs" id="segs"></div>
+<div class="meter"><strong><span id="count">0</span> joined</strong><span id="goalTxt">Next contact file at 500</span></div>
+<div class="ms" id="ms"></div>
+</section>
+
+<div class="grid">
+<section class="card">
+<div id="done" class="hide">
+<div class="ok"><strong>You're in! 🎉</strong><p style="margin:6px 0 0">Invite friends: the more people join, the sooner the contact file is released. Your link:</p><code id="reflink"></code>
+<a class="btn alt" id="wa" target="_blank" rel="noopener">Share on WhatsApp</a></div>
+<button class="ghost" id="copy">Copy my link</button>
+</div>
+<form id="form" novalidate>
+<h2>Join for free</h2>
+<label for="name">Your name</label>
+<input id="name" autocomplete="name" maxlength="40" placeholder="e.g. Amina Juma">
+<label for="num">WhatsApp number</label>
+<div class="row"><select id="cc" aria-label="Country code"></select><input id="num" inputmode="tel" autocomplete="tel-national" placeholder="712 345 678"></div>
+<label class="chk" for="agree"><input type="checkbox" id="agree"><span>I agree that my name and WhatsApp number will be shared with other ViralView members in a contact file, and that I can ask to be removed at any time.</span></label>
+<button id="go" type="submit">Join ViralView</button>
+<div class="err" id="err" role="alert"></div>
+</form>
+</section>
+
+<section class="card">
+<h2>How it works</h2>
+<ol>
+<li><b>Join.</b> <span>Add only your own name and number.</span></li>
+<li><b>Invite.</b> <span>Share your link to fill the group faster.</span></li>
+<li><b>Save.</b> <span>At each goal you get a contact file (VCF). Open it and save everyone in one tap.</span></li>
+<li><b>View.</b> <span>Watch and react to other members' statuses. They do the same for yours.</span></li>
+</ol>
+</section>
+</div>
+<section class="card" style="margin-top:24px" aria-label="Top inviters">
+<h2>Top inviters</h2>
+<p class="empty" style="margin-bottom:10px">Every friend who joins with your link counts. Climb the board and your name gets seen first.</p>
+<ol class="board" id="board"></ol>
+</section>
+<footer>Only your name and number are stored. To be removed, message the admin and your data is deleted. ViralView is not affiliated with WhatsApp.
+<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--line)">
+<div><b>-powered by RAMS-TECH</b></div>
+<div>contact <a href="tel:+255749329653" style="color:inherit">0749329653</a> / <a href="tel:+255620130446" style="color:inherit">0620130446</a></div>
+</div></footer>
+</main>
+
+<main id="admin" class="hide">
+<h1 style="font-size:2rem">Admin</h1>
+<section class="card" id="login">
+<h2>Sign in</h2>
+<label for="em">Email</label><input id="em" type="email" autocomplete="username">
+<label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password">
+<div style="margin-top:14px"><button id="in">Sign in</button></div><div class="err" id="lerr"></div>
+</section>
+<section id="panel" class="hide">
+<div class="card" style="margin-bottom:18px">
+<h2>Export contacts</h2>
+<p style="color:var(--mut);margin:0 0 10px">Members <b id="atot">0</b>. Choose a batch by member number.</p>
+<div class="two"><div><label for="from">From #</label><input id="from" type="number" min="1" value="1"></div><div><label for="to">To #</label><input id="to" type="number" min="1" value="500"></div></div>
+<div class="ms" id="presets"></div>
+<div class="two" style="margin-top:16px"><button id="vcf">Download VCF</button><button class="alt" id="csv">Download CSV</button></div>
+<div class="err" id="aerr"></div>
+</div>
+<div class="card"><h2>Latest members</h2><div class="tw"><table><thead><tr><th>#</th><th>Name</th><th>Number</th><th>Invited</th></tr></thead><tbody id="rows"></tbody></table></div></div>
+</section>
+<p><a href="#" style="color:var(--mut)">← Back to site</a></p>
+</main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.js"></script>
+<script>
+/* ===== CONFIG: paste your Supabase values to go live ===== */
+const SUPABASE_URL = "https://wovzyxxzrwalatmtetfy.supabase.co";
+const SUPABASE_KEY = "sb_publishable_SP2qwDptIQ85OqPbntVXQw_leLNooAb";
+const MILESTONES = [500,1000,1500,2000,3000];
+const CODES = [["255","🇹🇿 +255"],["254","🇰🇪 +254"],["256","🇺🇬 +256"],["250","🇷🇼 +250"],["260","🇿🇲 +260"],["234","🇳🇬 +234"],["27","🇿🇦 +27"],["91","🇮🇳 +91"],["971","🇦🇪 +971"],["44","🇬🇧 +44"],["1","🇺🇸 +1"]];
+
+const $ = id => document.getElementById(id);
+const sb = (SUPABASE_URL && SUPABASE_KEY && window.supabase) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+if (!sb) $("demo").classList.remove("hide");
+
+/* storage layer: Supabase, or browser demo */
+let mem = [];
+function lget(){ try { return JSON.parse(localStorage.getItem("vv_members")||"[]"); } catch(e){ return mem; } }
+function lset(v){ mem = v; try { localStorage.setItem("vv_members", JSON.stringify(v)); } catch(e){} }
+const store = {
+  async count(){ if(sb){ const {data,error}=await sb.rpc("member_count"); if(error) throw error; return data; } return lget().length; },
+  async add(m){
+    if(sb){ const {error}=await sb.from("members").insert(m); if(error) throw error; return; }
+    const l=lget(); if(l.some(x=>x.phone===m.phone)) throw {code:"23505"};
+    l.push({...m,id:l.length+1,created_at:new Date().toISOString()}); lset(l);
+  },
+  async top(){
+    if(sb){ const {data,error}=await sb.rpc("top_inviters",{lim:10}); if(error) throw error; return data; }
+    const l=lget(), c={}; l.forEach(m=>{ if(m.ref_by) c[m.ref_by]=(c[m.ref_by]||0)+1; });
+    return l.filter(m=>c[m.code]).map(m=>({name:m.name.split(" ")[0],invites:c[m.code]})).sort((a,b)=>b.invites-a.invites).slice(0,10);
+  },
+  async all(){ if(sb){ const {data,error}=await sb.from("members").select("*").order("id"); if(error) throw error; return data; } return lget(); }
+};
+
+/* progress */
+const segs=$("segs"); for(let i=0;i<10;i++){ segs.insertAdjacentHTML("beforeend","<div class='seg'><i></i></div>"); }
+function render(n){
+  const goal = MILESTONES.find(m=>m>n) || MILESTONES[MILESTONES.length-1];
+  const prev = [0,...MILESTONES].filter(m=>m<=n && m<goal).pop() || 0;
+  const pct = Math.min(1,(n-prev)/(goal-prev))*10;
+  $("count").textContent = n;
+  $("goalTxt").textContent = n>=goal ? "All goals reached" : (goal-n)+" more for the file at "+goal;
+  [...segs.children].forEach((s,i)=>{ s.firstChild.style.width = Math.max(0,Math.min(1,pct-i))*100+"%"; });
+  $("ms").innerHTML = MILESTONES.map(m=>`<span class="${n>=m?"done":""}">${m}${n>=m?" ✓":""}</span>`).join("");
+}
+async function renderBoard(){
+  const ol=$("board"); ol.innerHTML="";
+  let rows=[]; try{ rows=await store.top(); }catch(e){}
+  if(!rows.length){ const li=document.createElement("li"); li.className="empty"; li.textContent="No invites yet. Be the first on the board: join, then share your link."; ol.append(li); return; }
+  rows.forEach((r,i)=>{
+    const li=document.createElement("li"), rk=document.createElement("span"), nm=document.createElement("span"), iv=document.createElement("span");
+    rk.className="rk"; rk.textContent=i+1; nm.className="nm"; nm.textContent=r.name; iv.className="iv"; iv.textContent=r.invites+(r.invites==1?" invite":" invites");
+    li.append(rk,nm,iv); ol.append(li);
+  });
+}
+async function refresh(){ try{ render(await store.count()); }catch(e){ render(0); } renderBoard(); }
+
+/* form */
+CODES.forEach(([c,l])=>{ const o=document.createElement("option"); o.value=c; o.textContent=l; $("cc").append(o); });
+const ref = new URLSearchParams(location.search).get("ref") || null;
+function norm(cc,raw){
+  let d = raw.replace(/\D/g,"");
+  if(d.startsWith("00")) d=d.slice(2);
+  else if(d.startsWith("0")) d=cc+d.slice(1);
+  else if(!d.startsWith(cc)) d=cc+d;
+  return d;
+}
+$("form").addEventListener("submit", async e=>{
+  e.preventDefault(); const err=$("err"); err.textContent="";
+  const name=$("name").value.trim(), phone=norm($("cc").value,$("num").value);
+  if(name.length<2) return err.textContent="Enter your name.";
+  if(phone.length<9||phone.length>15) return err.textContent="Enter a valid WhatsApp number.";
+  if(!$("agree").checked) return err.textContent="Tick the box to agree before joining.";
+  const code=Math.random().toString(36).slice(2,8);
+  $("go").disabled=true;
+  try{
+    await store.add({name,phone,code,ref_by:ref});
+    const link=location.origin+location.pathname+"?ref="+code;
+    $("reflink").textContent=link;
+    $("wa").href="https://wa.me/?text="+encodeURIComponent("Join ViralView and grow your WhatsApp status views: "+link);
+    $("form").classList.add("hide"); $("done").classList.remove("hide");
+    refresh();
+  }catch(x){
+    err.textContent = x && x.code==="23505" ? "This number has already joined." : "Something went wrong. Try again in a moment.";
+  }
+  $("go").disabled=false;
+});
+$("copy").onclick=async()=>{ try{ await navigator.clipboard.writeText($("reflink").textContent); $("copy").textContent="Copied"; }catch(e){ $("copy").textContent="Select and copy the link above"; } };
+
+/* admin */
+function route(){
+  const a = location.hash==="#admin";
+  $("home").classList.toggle("hide",a); $("admin").classList.toggle("hide",!a);
+  if(a) initAdmin(); else refresh();
+}
+let members=[];
+async function initAdmin(){
+  if(!sb){ $("login").classList.add("hide"); return loadPanel(); }
+  const {data}=await sb.auth.getSession(); if(data.session){ $("login").classList.add("hide"); loadPanel(); }
+}
+$("in").onclick=async()=>{
+  const {error}=await sb.auth.signInWithPassword({email:$("em").value,password:$("pw").value});
+  if(error) return $("lerr").textContent="Wrong email or password.";
+  $("login").classList.add("hide"); loadPanel();
+};
+async function loadPanel(){
+  try{ members=await store.all(); }catch(e){ $("aerr").textContent="Could not load members."; return; }
+  $("panel").classList.remove("hide"); $("atot").textContent=members.length;
+  const inv={}; members.forEach(m=>{ if(m.ref_by) inv[m.ref_by]=(inv[m.ref_by]||0)+1; });
+  members.forEach(m=>m.invited=inv[m.code]||0);
+  $("rows").innerHTML=""; members.slice(-20).reverse().forEach(m=>{
+    const tr=document.createElement("tr");
+    [m.id,m.name,"+"+m.phone,m.invited].forEach(v=>{ const td=document.createElement("td"); td.textContent=v; tr.append(td); });
+    $("rows").append(tr);
+  });
+  $("presets").innerHTML="";
+  let p=0; MILESTONES.forEach(m=>{ const b=document.createElement("span"); b.textContent=(p+1)+"–"+m; const lo=p+1; b.style.cursor="pointer"; b.tabIndex=0;
+    const pick=()=>{ $("from").value=lo; $("to").value=m; }; b.onclick=pick; b.onkeydown=e=>{ if(e.key==="Enter") pick(); }; $("presets").append(b); p=m; });
+}
+function batch(){
+  const f=+$("from").value, t=+$("to").value, r=members.filter(m=>m.id>=f&&m.id<=t);
+  if(!r.length){ $("aerr").textContent="No members in that range."; return null; }
+  $("aerr").textContent=""; return r;
+}
+function save(name,text,type){
+  const url=URL.createObjectURL(new Blob([text],{type})); const a=document.createElement("a");
+  a.href=url; a.download=name; document.body.append(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+const clean = s => String(s).replace(/[\r\n;,\\]/g," ");
+$("vcf").onclick=()=>{ const r=batch(); if(!r) return;
+  save("viralview-"+$("from").value+"-"+$("to").value+".vcf", r.map(m=>`BEGIN:VCARD\r\nVERSION:3.0\r\nFN:VV ${clean(m.name)}\r\nTEL;TYPE=CELL:+${m.phone}\r\nEND:VCARD`).join("\r\n")+"\r\n","text/vcard"); };
+$("csv").onclick=()=>{ const r=batch(); if(!r) return;
+  const q=v=>'"'+String(v).replace(/"/g,'""').replace(/^[=+\-@]/,"'$&")+'"';
+  save("viralview-"+$("from").value+"-"+$("to").value+".csv", "Name,Phone,Invited,Joined\r\n"+r.map(m=>[q("VV "+m.name),q("+"+m.phone),m.invited,q(m.created_at||"")].join(",")).join("\r\n"),"text/csv"); };
+
+window.addEventListener("hashchange",route); route();
+</script>
+</body>
+</html>
